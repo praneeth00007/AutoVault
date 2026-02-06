@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Shield, Activity, LogOut, Vault, Cpu } from 'lucide-react';
+import { LayoutDashboard, Activity, LogOut, Vault, Cpu } from 'lucide-react';
 import { useAccount, useDisconnect } from '../hooks/useWeb3Compat';
 import { Link } from 'react-router-dom';
 
@@ -9,9 +9,7 @@ const Sidebar = ({ currentView, setView }) => {
     const { disconnect } = useDisconnect();
 
     const navItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'protection', label: 'Protection', icon: Shield },
-        { id: 'analytics', label: 'ABS Analytics', icon: Activity },
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, isRoute: false },
     ];
 
     return (
@@ -49,6 +47,15 @@ const Sidebar = ({ currentView, setView }) => {
                         </button>
                     );
                 })}
+
+                {/* ABS Analytics - Route to separate page */}
+                <Link
+                    to="/analytics"
+                    className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 font-black uppercase text-[10px] tracking-[0.2em] group relative text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                >
+                    <Activity className="text-slate-500 group-hover:text-slate-300" size={18} />
+                    <span>ABS Analytics</span>
+                </Link>
             </nav>
 
             {/* User Session Section */}

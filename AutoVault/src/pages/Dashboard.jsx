@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     FileUp, Shield, Cpu, Activity, CheckCircle2,
@@ -11,6 +11,7 @@ import CSVEditor from '../components/CSVEditor';
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const { executionId } = useParams();
     const { isInitialized, address, protectData, grantAccess, processData, fetchResult, checkAndStake } = useDataProtector();
 
     const [step, setStep] = useState('upload'); // upload, refining, validating, protecting, computing, completed
@@ -20,6 +21,14 @@ const Dashboard = () => {
     const [taskId, setTaskId] = useState(null);
     const [finalResult, setFinalResult] = useState(null);
     const [rawResult, setRawResult] = useState(null);
+
+    // Generate execution ID on mount if not present
+    useEffect(() => {
+        if (!executionId) {
+            const newExecutionId = `exec_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+            navigate(`/dashboard/${newExecutionId}`, { replace: true });
+        }
+    }, [executionId, navigate]);
 
     const handleFileUpload = (e) => {
         const files = Array.from(e.target.files);
@@ -193,9 +202,11 @@ const Dashboard = () => {
                     </h1>
                     <p className="text-slate-500 text-sm font-medium uppercase tracking-[0.1em]">Automobile Asset-Backed Analytics</p>
                 </div>
-                <Link to="/" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors flex items-center gap-2">
-                    <ArrowRight className="rotate-180" size={14} /> Back to Overview
-                </Link>
+                {step === 'completed' && (
+                    <Link to="/" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors flex items-center gap-2">
+                        <ArrowRight className="rotate-180" size={14} /> Back to Overview
+                    </Link>
+                )}
             </motion.div>
 
             <div className="grid lg:grid-cols-4 gap-12">
@@ -203,7 +214,7 @@ const Dashboard = () => {
                 <div className="lg:col-span-1 border-r border-white/5 pr-8 space-y-1">
                     {[
                         { id: 'upload', label: 'Ingestion' },
-                        { id: 'protecting', label: 'Protection' },
+                        { id: 'protecting', label: 'Encryption' },
                         { id: 'computing', label: 'Analysis' },
                         { id: 'completed', label: 'Final Report' }
                     ].map((s, i) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-    BarChart3, Clock, Shield, ExternalLink, Trash2, FileText, TrendingUp
+    BarChart3, Clock, Shield, ExternalLink, Trash2, FileText, TrendingUp, ArrowLeft
 } from 'lucide-react';
 
 const ABSAnalytics = () => {
@@ -68,6 +68,12 @@ const ABSAnalytics = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-12"
                 >
+                    <button
+                        onClick={() => navigate('/dashboard')}
+                        className="inline-flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-6 text-sm font-bold uppercase tracking-widest"
+                    >
+                        <ArrowLeft size={16} /> Back to Dashboard
+                    </button>
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-6">
                         <div>
                             <h1 className="text-4xl font-black tracking-tight mb-2">

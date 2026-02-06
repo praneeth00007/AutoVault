@@ -1,14 +1,20 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AutoVault | Confidential Automobile ABS</title>
-    <meta name="description" content="Secure, private, and verifiable automobile asset-backed securities powered by iExec Confidential Computing." />
-  </head>
-  <body class="bg-[#05060b]">
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://rsms.me; font-src 'self' https://fonts.gstatic.com https://rsms.me; img-src 'self' data: https:; connect-src 'self' https: wss: ws:; worker-src 'self' blob:;">
+  <title>AutoVault | Confidential Automobile ABS</title>
+  <meta name="description"
+    content="Secure, private, and verifiable automobile asset-backed securities powered by iExec Confidential Computing." />
+</head>
+
+<body class="bg-[#05060b]">
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

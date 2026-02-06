@@ -69,7 +69,7 @@ function App() {
                     >
                       Enter Workspace
                     </button>
-                    <a href="#protection" className="btn-secondary px-12 py-4">
+                    <a href="#features" className="btn-secondary px-12 py-4">
                       Learn More
                     </a>
                   </div>
@@ -107,6 +107,19 @@ function App() {
         } />
 
         <Route path="/dashboard" element={
+          <ChainGuard>
+            <div className="flex min-h-screen animate-fadeIn">
+              {/* Dashboard View with Sidebar - Pattern from Scorely */}
+              <Sidebar currentView="dashboard" setView={() => { }} />
+
+              <main className="flex-1 ml-[280px]">
+                <Dashboard />
+              </main>
+            </div>
+          </ChainGuard>
+        } />
+
+        <Route path="/dashboard/:executionId" element={
           <ChainGuard>
             <div className="flex min-h-screen animate-fadeIn">
               {/* Dashboard View with Sidebar - Pattern from Scorely */}
