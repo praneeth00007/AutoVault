@@ -35,10 +35,6 @@ const Navbar = ({ onEnterDashboard }) => {
 
                 {/* Desktop Nav Actions */}
                 <div className="hidden md:flex items-center gap-6">
-                    <Link to="/analytics" className="text-[11px] font-black uppercase tracking-[.2em] text-slate-400 hover:text-white transition-colors">ABS Analytics</Link>
-
-                    <div className="w-px h-5 bg-white/10 mx-2" />
-
                     {isConnected ? (
                         <button onClick={onEnterDashboard} className="btn-primary">
                             Workspace <ChevronRight size={14} />
@@ -69,8 +65,6 @@ const Navbar = ({ onEnterDashboard }) => {
                         className="md:hidden bg-black/95 backdrop-blur-2xl border-b border-white/10 overflow-hidden"
                     >
                         <div className="flex flex-col gap-6 p-8">
-                            <Link to="/analytics" className="text-sm font-black uppercase tracking-widest text-slate-400" onClick={() => setMobileMenuOpen(false)}>ABS Analytics</Link>
-                            <div className="h-px bg-white/5" />
                             {isConnected ? (
                                 <button onClick={() => { onEnterDashboard(); setMobileMenuOpen(false); }} className="btn-primary w-full justify-center">
                                     Open Workspace

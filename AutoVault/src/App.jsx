@@ -18,7 +18,7 @@ function App() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Auto-navigate to dashboard when wallet is connected if on landing page
+  // Auto-navigate to dashboard when wallet is connected
   useEffect(() => {
     if (isConnected && location.pathname === '/') {
       navigate('/dashboard')
@@ -64,10 +64,10 @@ function App() {
                   </p>
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                     <button
-                      onClick={() => navigate('/dashboard')}
+                      onClick={isConnected ? () => navigate('/dashboard') : handleConnect}
                       className="btn-primary px-12 py-4"
                     >
-                      Enter Workspace
+                      {isConnected ? 'Enter Workspace' : 'Get Started'}
                     </button>
                     <a href="#features" className="btn-secondary px-12 py-4">
                       Learn More
@@ -93,7 +93,6 @@ function App() {
                   <div className="flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.25em]">
                     <a href="https://iex.ec" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">iExec Network</a>
                     <a href="#features" className="hover:text-amber-400 transition-colors">How It Works</a>
-                    <a href="/analytics" className="hover:text-amber-400 transition-colors">Analytics</a>
                   </div>
                 </div>
                 <div className="pt-8 border-t border-white/5 text-center">
