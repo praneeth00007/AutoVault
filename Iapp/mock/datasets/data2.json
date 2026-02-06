@@ -1,0 +1,43 @@
+{
+    "loans": [
+        {
+            "loan_id": "L2001",
+            "origination_date": "2023-06-01",
+            "remaining_term_months": 24,
+            "principal_outstanding": 12000.00,
+            "interest_rate_annual": 12.5,
+            "fico_bucket": 640,
+            "ltv": 110.0,
+            "dti": 45.0,
+            "vehicle_type": "ICE",
+            "vehicle_age_years": 6,
+            "payment_status": "60dpd"
+        },
+        {
+            "loan_id": "L2002",
+            "origination_date": "2023-12-10",
+            "remaining_term_months": 60,
+            "principal_outstanding": 28000.00,
+            "interest_rate_annual": 9.9,
+            "fico_bucket": 610,
+            "ltv": 105.0,
+            "dti": 50.0,
+            "vehicle_type": "ICE",
+            "vehicle_age_years": 4,
+            "payment_status": "default"
+        },
+        {
+            "loan_id": "L2003",
+            "origination_date": "2024-01-05",
+            "remaining_term_months": 72,
+            "principal_outstanding": 35000.00,
+            "interest_rate_annual": 8.5,
+            "fico_bucket": 680,
+            "ltv": 95.0,
+            "dti": 42.0,
+            "vehicle_type": "Hybrid",
+            "vehicle_age_years": 2,
+            "payment_status": "current"
+        }
+    ]
+}
