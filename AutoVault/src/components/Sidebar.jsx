@@ -17,12 +17,13 @@ const Sidebar = ({ currentView, setView }) => {
             {/* Logo Section */}
             <Link
                 to="/"
-                className="p-8 border-b border-white/5 flex items-center gap-3 cursor-pointer hover:bg-white/[0.02] transition-colors"
+                className="p-10 border-b border-white/5 flex items-center justify-center cursor-pointer hover:bg-white/[0.02] transition-colors group"
             >
-                <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center">
-                    <Vault className="text-black" size={24} />
-                </div>
-                <span className="text-xl font-black tracking-tighter uppercase gold-gradient-text">AutoVault</span>
+                <img
+                    src="/Logo.png"
+                    alt="AutoVault Logo"
+                    className="h-60 w-auto object-contain transform group-hover:scale-105 transition-all duration-500 drop-shadow-[0_0_50px_rgba(251,191,36,0.3)]"
+                />
             </Link>
 
             {/* Navigation Section */}

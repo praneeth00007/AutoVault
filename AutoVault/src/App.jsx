@@ -82,11 +82,11 @@ function App() {
             <footer className="py-24 border-t border-white/5 text-slate-500 bg-gradient-to-b from-transparent to-white/[0.01]">
               <div className="container mx-auto px-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
-                  <div>
-                    <div className="font-black text-white uppercase tracking-tighter text-3xl mb-2">
+                  <div className="flex flex-col items-center md:items-start gap-4">
+                    <div className="font-black text-white uppercase tracking-tighter text-3xl">
                       AUTO<span className="text-amber-500">VAULT</span>
                     </div>
-                    <div className="text-[10px] text-slate-600 font-black tracking-[0.3em] uppercase">
+                    <div className="text-[10px] text-slate-600 font-black tracking-[0.4em] uppercase text-center md:text-left mt-1">
                       Confidential ABS Analytics
                     </div>
                   </div>

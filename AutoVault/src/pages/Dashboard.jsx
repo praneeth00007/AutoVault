@@ -196,11 +196,18 @@ const Dashboard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16"
             >
-                <div>
-                    <h1 className="text-3xl font-black mb-2 tracking-tight flex items-center gap-3">
-                        Secure <span className="text-amber-500">Workspace</span>
-                    </h1>
-                    <p className="text-slate-500 text-sm font-medium uppercase tracking-[0.1em]">Automobile Asset-Backed Analytics</p>
+                <div className="flex items-center gap-6">
+                    <img
+                        src="/Logo.png"
+                        alt="AutoVault Logo"
+                        className="h-24 w-auto object-contain drop-shadow-[0_0_20px_rgba(251,191,36,0.15)]"
+                    />
+                    <div>
+                        <h1 className="text-4xl font-black mb-1 tracking-tight">
+                            Secure <span className="text-amber-500">Workspace</span>
+                        </h1>
+                        <p className="text-slate-500 text-sm font-medium uppercase tracking-[0.2em]">Automobile Asset-Backed Analytics</p>
+                    </div>
                 </div>
                 {step === 'completed' && (
                     <Link to="/" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors flex items-center gap-2">

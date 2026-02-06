@@ -26,11 +26,12 @@ const Navbar = ({ onEnterDashboard }) => {
     return (
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'py-4 bg-black/60 backdrop-blur-2xl border-b border-white/5' : 'py-8 bg-transparent'}`}>
             <div className="container mx-auto px-6 flex items-center justify-between">
-                <Link to="/" className="flex items-center gap-3 group">
-                    <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform cursor-pointer shadow-[0_0_20px_rgba(251,191,36,0.15)]">
-                        <Vault className="text-black" size={22} />
-                    </div>
-                    <span className="text-2xl font-black tracking-tighter uppercase gold-gradient-text">AutoVault</span>
+                <Link to="/" className="flex items-center group">
+                    <img
+                        src="/Logo.png"
+                        alt="AutoVault Logo"
+                        className="h-40 w-auto object-contain transform group-hover:scale-105 transition-all duration-500 drop-shadow-[0_0_50px_rgba(251,191,36,0.4)]"
+                    />
                 </Link>
 
                 {/* Desktop Nav Actions */}

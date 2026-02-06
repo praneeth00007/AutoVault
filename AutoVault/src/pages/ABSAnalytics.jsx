@@ -75,11 +75,18 @@ const ABSAnalytics = () => {
                         <ArrowLeft size={16} /> Back to Dashboard
                     </button>
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-6">
-                        <div>
-                            <h1 className="text-4xl font-black tracking-tight mb-2">
-                                ABS <span className="text-amber-500">Analytics</span>
-                            </h1>
-                            <p className="text-slate-500 text-sm font-bold uppercase tracking-widest">Analysis History</p>
+                        <div className="flex items-center gap-6">
+                            <img
+                                src="/Logo.png"
+                                alt="AutoVault Logo"
+                                className="h-28 w-auto object-contain drop-shadow-[0_0_20px_rgba(251,191,36,0.15)]"
+                            />
+                            <div>
+                                <h1 className="text-4xl font-black tracking-tight mb-2">
+                                    ABS <span className="text-amber-500">Analytics</span>
+                                </h1>
+                                <p className="text-slate-500 text-sm font-bold uppercase tracking-widest">Analysis History</p>
+                            </div>
                         </div>
                         <div className="flex items-center gap-4">
                             <button

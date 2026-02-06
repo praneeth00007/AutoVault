@@ -15,12 +15,14 @@ const Hero = ({ onEnterDashboard, handleConnect, isConnected }) => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <div className="flex items-center justify-center gap-2 mb-10">
-                            <span className="h-px w-12 bg-gradient-to-r from-transparent to-amber-500/50"></span>
-                            <span className="text-amber-500 text-[10px] font-black tracking-[0.3em] uppercase">
-                                Powered by Intel SGX · iExec Network
-                            </span>
-                            <span className="h-px w-12 bg-gradient-to-l from-transparent to-amber-500/50"></span>
+                        <div className="flex flex-col items-center mb-12">
+                            <div className="flex items-center justify-center gap-2">
+                                <span className="h-px w-12 bg-gradient-to-r from-transparent to-amber-500/50"></span>
+                                <span className="text-amber-500 text-[10px] font-black tracking-[0.3em] uppercase">
+                                    Powered by Intel SGX • iExec Network
+                                </span>
+                                <span className="h-px w-12 bg-gradient-to-l from-transparent to-amber-500/50"></span>
+                            </div>
                         </div>
 
                         <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-10 tracking-tighter leading-[0.9] text-white">
