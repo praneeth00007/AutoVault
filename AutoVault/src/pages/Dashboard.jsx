@@ -117,11 +117,7 @@ const Dashboard = () => {
 
             setStep('computing');
             setExecutionStatus('Checking RLC Stake...');
-            try {
-                await checkAndStake();
-            } catch (e) {
-                console.warn("Stake check failed, continuing:", e);
-            }
+            await checkAndStake();
 
             setExecutionStatus('Initializing Secure Enclave (Intel SGX)...');
 

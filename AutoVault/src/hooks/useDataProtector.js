@@ -159,7 +159,7 @@ export function useDataProtector() {
         return JSON.parse(resultJson);
     }, [dataProtector]);
 
-    const checkAndStake = useCallback(async (requiredNRLC = 200000000) => {
+    const checkAndStake = useCallback(async (requiredNRLC = 100000000) => {
         if (!iexec) throw new Error("IExec SDK not initialized");
         if (!address) throw new Error("Wallet not connected");
 
@@ -167,8 +167,15 @@ export function useDataProtector() {
         const balance = await iexec.account.checkBalance(address);
         const stake = balance.stake;
 
-        if (new utils.BN(stake).lt(new utils.BN(requiredNRLC))) {
-            const depositAmount = "500000000"; // 0.5 RLC
+        const reqBN = new utils.BN(requiredNRLC);
+        const stakeBN = new utils.BN(stake);
+
+        if (stakeBN.lt(reqBN)) {
+            // Calculate exact needed + 0.01 RLC buffer
+            const needed = reqBN.sub(stakeBN).add(new utils.BN("10000000"));
+            const depositAmount = needed.toString();
+
+            console.log(`[AutoVault] Stake too low. Depositing ${depositAmount} nRLC...`);
             const { amount, txHash } = await iexec.account.deposit(depositAmount);
             return { staked: true, balance: amount, txHash };
         }
