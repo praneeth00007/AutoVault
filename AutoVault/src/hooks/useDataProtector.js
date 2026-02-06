@@ -74,7 +74,9 @@ export function useDataProtector() {
                                 return target.request(args);
                             };
                         }
-                        return target[prop];
+                        // SAFE BINDING FIX: Ensure methods are bound to original target
+                        const value = target[prop];
+                        return typeof value === 'function' ? value.bind(target) : value;
                     }
                 });
 
@@ -132,7 +134,7 @@ export function useDataProtector() {
             protectedData: protectedDataAddress,
             app: RESOURCE_APP_ADDRESS,
             workerpool: WORKERPOOL_ADDRESS,
-            category: 3,
+            category: 0,
             workerpoolMaxPrice: 100000000,
             appMaxPrice: 100000000,
             path: "result.json",
