@@ -34,59 +34,52 @@ export function useDataProtector() {
             try {
                 const { IExecDataProtector } = await import("@iexec/dataprotector");
 
-                // --- GAS FIX PROXY FOR METAMASK ---
-                // This intercepts all transactions and ensures gas parameters are correctly set for Arbitrum Sepolia volatility.
-                const ethersProvider = new BrowserProvider(client.transport);
-                const gasFixProxy = new Proxy(client.transport, {
-                    get(target, prop) {
-                        if (prop === 'request') {
-                            return async (args) => {
-                                if (args.method === 'eth_sendTransaction') {
-                                    const tx = args.params[0];
-                                    try {
-                                        const block = await ethersProvider.getBlock('latest');
-                                        const baseFee = block?.baseFeePerGas;
+                // --- GAS FIX: DIRECT PATCHING (NO PROXY) ---
+                // Proxies cause identity/context issues in the deployed build (minification/SMS auth).
+                // We patch the provider directly to ensure 100% compatibility while fixing Gas.
+                const provider = client.transport;
+                const ethersProvider = new BrowserProvider(provider);
 
-                                        if (baseFee) {
-                                            // Ensure maxFeePerGas >= maxPriorityFeePerGas + baseFee
-                                            // Set priority fee to 0.1 gwei
-                                            const priorityFee = 100000000n;
-                                            // Set max fee to 2x base fee + priority fee to be extremely safe
-                                            const maxFee = (baseFee * 2n) + priorityFee;
+                if (!provider._gasPatched) {
+                    const originalRequest = provider.request.bind(provider);
+                    provider.request = async (args) => {
+                        if (args.method === 'eth_sendTransaction') {
+                            const tx = args.params[0];
+                            try {
+                                const block = await ethersProvider.getBlock('latest');
+                                const baseFee = block?.baseFeePerGas;
 
-                                            tx.maxFeePerGas = "0x" + maxFee.toString(16);
-                                            tx.maxPriorityFeePerGas = "0x" + priorityFee.toString(16);
+                                if (baseFee) {
+                                    const priorityFee = 100000000n; // 0.1 gwei
+                                    const maxFee = (baseFee * 2n) + priorityFee;
 
-                                            console.log('[GasFix] Optimization applied (EIP-1559):', {
-                                                baseFee: baseFee.toString(),
-                                                priorityFee: priorityFee.toString(),
-                                                maxFee: maxFee.toString()
-                                            });
-                                        } else {
-                                            const gasPrice = await ethersProvider.send('eth_gasPrice', []);
-                                            tx.gasPrice = "0x" + ((BigInt(gasPrice) * 120n) / 100n).toString(16);
-                                            console.log('[GasFix] Optimization applied (Legacy):', tx.gasPrice);
-                                        }
-                                    } catch (e) {
-                                        console.warn('[GasFix] Fee optimization skipped:', e);
-                                    }
+                                    tx.maxFeePerGas = "0x" + maxFee.toString(16);
+                                    tx.maxPriorityFeePerGas = "0x" + priorityFee.toString(16);
+
+                                    console.log('[GasFix] Optimization (EIP-1559)', {
+                                        old: tx.maxFeePerGas,
+                                        new: maxFee.toString()
+                                    });
+                                } else {
+                                    const gasPrice = await ethersProvider.send('eth_gasPrice', []);
+                                    tx.gasPrice = "0x" + ((BigInt(gasPrice) * 120n) / 100n).toString(16);
                                 }
-                                return target.request(args);
-                            };
+                            } catch (e) {
+                                console.warn('[GasFix] Failed:', e);
+                            }
                         }
-                        // SAFE BINDING FIX: Ensure methods are bound to original target
-                        const value = target[prop];
-                        return typeof value === 'function' ? value.bind(target) : value;
-                    }
-                });
+                        return originalRequest(args);
+                    };
+                    provider._gasPatched = true;
+                    console.log("[AutoVault] Provider patched for Gas");
+                }
 
-                const dp = new IExecDataProtector(gasFixProxy);
-                const iexecInstance = new IExec({ ethProvider: gasFixProxy });
+                const dp = new IExecDataProtector(provider);
+                const iexecInstance = new IExec({ ethProvider: provider });
 
                 setDataProtector(dp);
                 setIexec(iexecInstance);
                 setIsInitialized(true);
-                console.log("[AutoVault] iExec SDK Initialized with Gas Fixes");
             } catch (error) {
                 console.error("[AutoVault] iExec Initialization failed:", error);
                 setIsInitialized(false);
