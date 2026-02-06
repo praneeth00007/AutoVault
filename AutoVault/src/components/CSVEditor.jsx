@@ -5,8 +5,7 @@ import { validateLoanData, SAMPLE_LOANS } from '../lib/loan_validation';
 
 const CSVEditor = ({ rawData, onSave, onCancel }) => {
     const [loans, setLoans] = useState(rawData && rawData.length > 0 ? rawData : []);
-    const [filter, setFilter] = useState('all'); // all, valid, error
-
+    const [filter, setFilter] = useState('all');
     const handleLoadSamples = () => {
         setLoans(SAMPLE_LOANS);
     };
