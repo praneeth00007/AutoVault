@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar'
 import Hero from './components/Hero'
 import Features from './components/Features'
 import Dashboard from './pages/Dashboard'
+import AnalysisResults from './pages/AnalysisResults'
 import { useAccount, useSessionRestore } from './hooks/useWeb3Compat'
 import ChainGuard from './components/ChainGuard'
 import './App.css'
@@ -105,6 +106,12 @@ function App() {
                 <Dashboard />
               </main>
             </div>
+          </ChainGuard>
+        } />
+
+        <Route path="/results" element={
+          <ChainGuard>
+            <AnalysisResults />
           </ChainGuard>
         } />
       </Routes>

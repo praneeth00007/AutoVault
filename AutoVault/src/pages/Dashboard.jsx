@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     FileUp, Shield, Cpu, Activity, CheckCircle2,
-    AlertCircle, ArrowRight, Loader2, BarChart3,
-    Lock, PieChart, TrendingUp, RotateCcw
+    AlertCircle, ArrowRight, Loader2, RotateCcw
 } from 'lucide-react';
 import { useDataProtector } from '../hooks/useDataProtector';
 import { validateLoanData, SAMPLE_LOANS } from '../lib/loan_validation';
-import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid,
-    Tooltip, ResponsiveContainer, Cell, PieChart as RePie, Pie
-} from 'recharts';
-import Papa from 'papaparse';
 import CSVEditor from '../components/CSVEditor';
 
 const Dashboard = () => {
+    const navigate = useNavigate();
     const { isInitialized, address, protectData, grantAccess, processData, fetchResult, checkAndStake } = useDataProtector();
 
     const [step, setStep] = useState('upload'); // upload, refining, validating, protecting, computing, completed
@@ -24,6 +19,7 @@ const Dashboard = () => {
     const [executionStatus, setExecutionStatus] = useState('');
     const [taskId, setTaskId] = useState(null);
     const [finalResult, setFinalResult] = useState(null);
+    const [rawResult, setRawResult] = useState(null);
 
     const handleFileUpload = (e) => {
         const files = Array.from(e.target.files);
@@ -138,16 +134,25 @@ const Dashboard = () => {
                 throw new Error("Invalid TEE output format: Missing pool analysis.");
             }
 
+
+            setRawResult(result);
             setFinalResult(analysisData);
-            setStep('completed');
+
+            // Navigate to dedicated results page
+            navigate('/results', {
+                state: {
+                    finalResult: analysisData,
+                    rawResult: result,
+                    taskId,
+                    validationResult
+                }
+            });
         } catch (err) {
             console.error(err);
             setExecutionStatus(`Error: ${err.message}`);
             setStep('ready'); // Allow retry
         }
     };
-
-    const FICO_COLORS = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6'];
 
     return (
         <div className="pt-32 pb-20 px-6 container mx-auto max-w-6xl selection:bg-amber-500/20">
@@ -332,15 +337,28 @@ const Dashboard = () => {
                         {step === 'completed' && finalResult && (
                             <motion.div key="completed" className="space-y-8 pb-12">
                                 {/* Result Header */}
-                                <div className="border border-emerald-500/20 bg-emerald-500/[0.02] p-10 rounded-2xl flex items-center justify-between">
+                                <div className="border border-emerald-500/20 bg-emerald-500/[0.02] p-10 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-8">
                                     <div>
                                         <div className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500 mb-2">Authenticated ABS Report</div>
                                         <h2 className="text-3xl font-black tracking-tighter">POOL ANALYSIS</h2>
+                                        <div className="flex items-center gap-4 mt-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                                            <span className="flex items-center gap-1.5"><Shield size={12} className="text-emerald-500" /> Hardware Attested</span>
+                                            <span className="flex items-center gap-1.5"><Lock size={12} className="text-emerald-500" /> Private Execution</span>
+                                        </div>
                                     </div>
-                                    <div className="text-right">
-                                        <div className="text-slate-600 text-[10px] font-black uppercase tracking-widest mb-1 leading-none">Confidential Task ID</div>
-                                        <div className="font-mono text-[10px] text-slate-400">
-                                            {taskId ? taskId.slice(0, 16) : 'N/A'}
+                                    <div className="flex flex-col gap-4 w-full md:w-auto">
+                                        <button
+                                            onClick={downloadAnalysisPackage}
+                                            className="btn-primary px-8 py-3 flex items-center justify-center gap-3 group"
+                                        >
+                                            <Download size={16} />
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Analysis Package</span>
+                                        </button>
+                                        <div className="text-right px-2">
+                                            <div className="text-slate-600 text-[8px] font-black uppercase tracking-widest mb-1 leading-none">Task Signature</div>
+                                            <div className="font-mono text-[9px] text-slate-400 truncate max-w-[180px]">
+                                                {taskId || 'N/A'}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -353,17 +371,53 @@ const Dashboard = () => {
                                         { label: 'Exp. Loss (Base)', value: `${finalResult.credit_risk.base_expected_loss_pct}%` },
                                         { label: 'Exp. Loss (Stress)', value: `${finalResult.credit_risk.stress_expected_loss_pct}%` },
                                     ].map((m, i) => (
-                                        <div key={i} className="border border-white/5 bg-white/[0.02] p-6 rounded-2xl hover:bg-white/[0.04] transition-colors">
+                                        <div key={i} className="border border-white/5 bg-white/[0.02] p-6 rounded-2xl hover:bg-white/[0.04] transition-colors relative overflow-hidden group">
+                                            <div className="absolute top-0 left-0 w-1 h-full bg-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                                             <div className="text-slate-600 text-[10px] font-black uppercase tracking-widest mb-2 leading-none">{m.label}</div>
                                             <div className="text-2xl font-black text-white">{m.value}</div>
                                         </div>
                                     ))}
                                 </div>
 
+                                {/* Portfolio Characteristics Section */}
+                                <div className="border border-white/5 bg-white/[0.02] rounded-2xl overflow-hidden">
+                                    <div className="p-6 border-b border-white/5">
+                                        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white flex items-center gap-2">
+                                            <TrendingUp size={16} className="text-amber-500" />
+                                            Portfolio Characteristics
+                                        </h3>
+                                    </div>
+                                    <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+                                        <div className="flex flex-col gap-2">
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-600">Loan Count</div>
+                                            <div className="text-3xl font-black text-white">{finalResult.pool_summary.loan_count}</div>
+                                            <div className="text-[9px] text-slate-600 uppercase tracking-wider">Assets</div>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-600">Weighted Avg FICO</div>
+                                            <div className="text-3xl font-black text-amber-400">{finalResult.credit_risk.weighted_avg_fico}</div>
+                                            <div className="text-[9px] text-slate-600 uppercase tracking-wider">Credit Score</div>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-600">WAL (Avg Life)</div>
+                                            <div className="text-3xl font-black text-white">{finalResult.pool_summary.weighted_avg_life_years}</div>
+                                            <div className="text-[9px] text-slate-600 uppercase tracking-wider">Years</div>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-600">WAM (Avg Term)</div>
+                                            <div className="text-3xl font-black text-white">{finalResult.pool_summary.weighted_avg_remaining_term_months.toFixed(0)}</div>
+                                            <div className="text-[9px] text-slate-600 uppercase tracking-wider">Months</div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {/* Charts Area */}
                                 <div className="grid md:grid-cols-2 gap-8">
                                     <div className="border border-white/5 bg-white/[0.02] p-8 rounded-2xl h-[360px]">
-                                        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-8">FICO Distribution</h3>
+                                        <div className="flex items-center justify-between mb-8">
+                                            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">FICO Distribution</h3>
+                                            <BarChart3 size={16} className="text-slate-700" />
+                                        </div>
                                         <ResponsiveContainer width="100%" height="80%">
                                             <BarChart data={Object.entries(finalResult.credit_risk.fico_distribution_count || {}).map(([name, value]) => ({ name, value }))}>
                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
@@ -383,7 +437,10 @@ const Dashboard = () => {
                                     </div>
 
                                     <div className="border border-white/5 bg-white/[0.02] p-8 rounded-2xl h-[360px] relative">
-                                        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Tranche Recommendations</h3>
+                                        <div className="flex items-center justify-between mb-1">
+                                            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Tranche Recommendations</h3>
+                                            <PieChart size={16} className="text-slate-700" />
+                                        </div>
                                         <div className="absolute top-8 right-8 text-[10px] font-black tracking-widest text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
                                             {finalResult.recommended_tranche_structure.rating_implied}
                                         </div>
@@ -408,10 +465,49 @@ const Dashboard = () => {
                                                 </RePie>
                                             </ResponsiveContainer>
                                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-6">
-                                                <div className="text-[10px] uppercase text-slate-600 font-bold tracking-widest">Senior</div>
-                                                <div className="text-3xl font-black text-white">{finalResult.recommended_tranche_structure.senior_class_a_pct}%</div>
+                                                <div className="text-[10px] uppercase text-slate-600 font-bold tracking-widest leading-none mb-1">Senior</div>
+                                                <div className="text-3xl font-black text-white leading-none">{finalResult.recommended_tranche_structure.senior_class_a_pct}%</div>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                {/* Detailed Credit Risk Breakdown */}
+                                <div className="border border-white/5 bg-white/[0.02] rounded-2xl overflow-hidden">
+                                    <div className="p-8 border-b border-white/5 flex items-center justify-between">
+                                        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white">Delinquency & Credit Metrics</h3>
+                                        <div className="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                            Live Analysis
+                                        </div>
+                                    </div>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead className="bg-white/[0.01]">
+                                                <tr>
+                                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-white/5">Status Bucket</th>
+                                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-white/5">Exposure (USD)</th>
+                                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-white/5">Portfolio %</th>
+                                                    <th className="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-white/5">Risk Rating</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="text-sm">
+                                                {Object.entries(finalResult.credit_risk.delinquency_breakdown_usd).map(([status, amount], idx) => {
+                                                    const pct = ((amount / finalResult.pool_summary.total_principal_usd) * 100).toFixed(2);
+                                                    const risk = status === 'current' ? 'Minimal' : status === '30dpd' ? 'Moderate' : 'High';
+                                                    const riskColor = risk === 'Minimal' ? 'text-emerald-500' : risk === 'Moderate' ? 'text-amber-500' : 'text-red-500';
+
+                                                    return (
+                                                        <tr key={status} className="hover:bg-white/[0.01] transition-colors border-b border-white/5 last:border-0">
+                                                            <td className="px-8 py-5 font-bold uppercase text-xs tracking-wider text-slate-300">{status}</td>
+                                                            <td className="px-8 py-5 font-mono text-slate-400">${amount.toLocaleString()}</td>
+                                                            <td className="px-8 py-5 text-slate-500">{pct}%</td>
+                                                            <td className={`px-8 py-5 font-black uppercase text-[10px] tracking-widest ${riskColor}`}>{risk}</td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
 
@@ -421,25 +517,33 @@ const Dashboard = () => {
                                     </h3>
                                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                                         <div>
-                                            <p className="text-slate-400 text-xs uppercase font-bold mb-2">Projected Principal</p>
+                                            <p className="text-slate-400 text-[10px] uppercase font-bold mb-2 tracking-widest">Projected Principal</p>
                                             <p className="text-2xl font-black text-white">${finalResult.cashflow_projection.projected_annual_principal.toLocaleString()}</p>
                                         </div>
                                         <div>
-                                            <p className="text-slate-400 text-xs uppercase font-bold mb-2">Projected Interest</p>
+                                            <p className="text-slate-400 text-[10px] uppercase font-bold mb-2 tracking-widest">Projected Interest</p>
                                             <p className="text-2xl font-black text-white">${finalResult.cashflow_projection.projected_annual_interest.toLocaleString()}</p>
                                         </div>
                                         <div>
-                                            <p className="text-slate-400 text-xs uppercase font-bold mb-2">Gross Yield</p>
+                                            <p className="text-slate-400 text-[10px] uppercase font-bold mb-2 tracking-widest">Gross Yield</p>
                                             <p className="text-2xl font-black text-white">{finalResult.cashflow_projection.gross_yield_pct}%</p>
                                         </div>
                                         <div>
-                                            <p className="text-slate-400 text-xs uppercase font-bold mb-2">Net Excess Spread</p>
+                                            <p className="text-slate-400 text-[10px] uppercase font-bold mb-2 tracking-widest">Net Excess Spread</p>
                                             <p className="text-2xl font-black text-emerald-400">+{finalResult.cashflow_projection.net_excess_spread_pct}%</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <button onClick={() => setStep('upload')} className="btn-secondary w-full">Process Another Portfolio</button>
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <button onClick={() => setStep('upload')} className="btn-secondary flex-1 py-4 text-[10px] font-black uppercase tracking-widest">Process Another Portfolio</button>
+                                    <button
+                                        onClick={downloadAnalysisPackage}
+                                        className="btn-primary flex-1 py-4 text-[10px] font-black uppercase tracking-widest bg-emerald-600 hover:bg-emerald-500 border-emerald-500 shadow-emerald-500/20"
+                                    >
+                                        Export Audit-Ready Data
+                                    </button>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
