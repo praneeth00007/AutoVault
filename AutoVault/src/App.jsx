@@ -5,6 +5,7 @@ import Hero from './components/Hero'
 import Features from './components/Features'
 import Dashboard from './pages/Dashboard'
 import AnalysisResults from './pages/AnalysisResults'
+import ABSAnalytics from './pages/ABSAnalytics'
 import { useAccount, useSessionRestore } from './hooks/useWeb3Compat'
 import ChainGuard from './components/ChainGuard'
 import './App.css'
@@ -78,18 +79,27 @@ function App() {
 
             <Features />
 
-            <footer className="py-20 border-t border-white/5 text-slate-500 text-center">
+            <footer className="py-24 border-t border-white/5 text-slate-500 bg-gradient-to-b from-transparent to-white/[0.01]">
               <div className="container mx-auto px-6">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-                  <div className="font-black text-white uppercase tracking-tighter text-2xl">
-                    AUTO<span className="text-amber-500">VAULT</span>
+                <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+                  <div>
+                    <div className="font-black text-white uppercase tracking-tighter text-3xl mb-2">
+                      AUTO<span className="text-amber-500">VAULT</span>
+                    </div>
+                    <div className="text-[10px] text-slate-600 font-black tracking-[0.3em] uppercase">
+                      Confidential ABS Analytics
+                    </div>
                   </div>
-                  <div className="flex items-center gap-12 text-[10px] font-black uppercase tracking-widest">
-                    <a href="#" className="hover:text-amber-400 transition-colors">Privacy</a>
-                    <a href="#" className="hover:text-amber-400 transition-colors">Terms</a>
-                    <a href="#" className="hover:text-amber-400 transition-colors">Docs</a>
+                  <div className="flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.25em]">
+                    <a href="https://iex.ec" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">iExec Network</a>
+                    <a href="#features" className="hover:text-amber-400 transition-colors">How It Works</a>
+                    <a href="/analytics" className="hover:text-amber-400 transition-colors">Analytics</a>
                   </div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-700">&copy; 2026 Powered by Intel SGX</p>
+                </div>
+                <div className="pt-8 border-t border-white/5 text-center">
+                  <p className="text-[10px] font-bold tracking-[0.25em] text-slate-700">
+                    © 2026 AutoVault · Powered by iExec Confidential Computing
+                  </p>
                 </div>
               </div>
             </footer>
@@ -113,6 +123,10 @@ function App() {
           <ChainGuard>
             <AnalysisResults />
           </ChainGuard>
+        } />
+
+        <Route path="/analytics" element={
+          <ABSAnalytics />
         } />
       </Routes>
     </div>

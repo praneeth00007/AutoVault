@@ -140,8 +140,8 @@ def calculate_credit_risk(loans):
     total_principal = sum(l['principal_outstanding'] for l in loans)
     if total_principal == 0: return None
     
-    # 1. Delinquency Buckets
-    delinq_buckets = {"current": 0.0, "30dpd": 0.0, "60dpd": 0.0, "90+dpd": 0.0, "default": 0.0}
+    # 1. Delinquency Buckets (alphabetically ordered for determinism)
+    delinq_buckets = {"30dpd": 0.0, "60dpd": 0.0, "90+dpd": 0.0, "current": 0.0, "default": 0.0}
     
     # 2. Base Expected Loss Model
     # Matrix: FICO vs Status -> PD
@@ -192,7 +192,7 @@ def calculate_credit_risk(loans):
         "base_expected_loss_pct": round((expected_loss_sum / total_principal) * 100, 2),
         "stress_expected_loss_pct": round((stress_loss_sum / total_principal) * 100, 2),
         "fico_distribution_count": fico_bins,
-        "weighted_avg_fico": int(sum(l.get('fico_bucket',0)*l['principal_outstanding'] for l in loans)/total_principal)
+        "weighted_avg_fico": int(sum(l.get('fico_bucket',0)*l['principal_outstanding'] for l in loans)/max(total_principal, 1))
     }
 
 def calculate_cashflow(pool_metrics):
@@ -235,10 +235,10 @@ def calculate_cashflow(pool_metrics):
     net_spread = max(0, rate - cost_of_funds - servicing)
 
     return {
-        "projected_annual_principal": round(total_principal_repaid, 2),
-        "projected_annual_interest": round(total_interest, 2),
-        "gross_yield_pct": round(rate * 100, 2),
-        "net_excess_spread_pct": round(net_spread * 100, 2)
+        "projected_annual_principal": float(f"{total_principal_repaid:.2f}"),
+        "projected_annual_interest": float(f"{total_interest:.2f}"),
+        "gross_yield_pct": float(f"{rate * 100:.2f}"),
+        "net_excess_spread_pct": float(f"{net_spread * 100:.2f}")
     }
 
 def recommend_tranche_structure(credit_metrics):
@@ -380,7 +380,7 @@ def main():
             os.makedirs(IEXEC_OUT)
 
         with open(result_path, 'w') as f:
-            json.dump(final_output, f, indent=2)
+            json.dump(final_output, f, indent=2, sort_keys=True, ensure_ascii=True)
         
         print(f"Result written to {result_path}")
         computed_json = {"deterministic-output-path": result_path}
@@ -399,7 +399,7 @@ def main():
             os.makedirs(IEXEC_OUT)
             
         with open(os.path.join(IEXEC_OUT, 'computed.json'), 'w') as f:
-            json.dump(computed_json, f)
+            json.dump(computed_json, f, sort_keys=True, ensure_ascii=True)
         print("computed.json written.")
 
 if __name__ == '__main__':

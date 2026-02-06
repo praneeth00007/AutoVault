@@ -15,38 +15,42 @@ const Hero = ({ onEnterDashboard, handleConnect, isConnected }) => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <div className="flex items-center justify-center gap-2 mb-8">
-                            <span className="h-px w-8 bg-amber-500/50"></span>
+                        <div className="flex items-center justify-center gap-2 mb-10">
+                            <span className="h-px w-12 bg-gradient-to-r from-transparent to-amber-500/50"></span>
                             <span className="text-amber-500 text-[10px] font-black tracking-[0.3em] uppercase">
-                                Powered by iExec Confidential Computing
+                                Powered by Intel SGX · iExec Network
                             </span>
-                            <span className="h-px w-8 bg-amber-500/50"></span>
+                            <span className="h-px w-12 bg-gradient-to-l from-transparent to-amber-500/50"></span>
                         </div>
 
-                        <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tighter leading-none text-white">
-                            Automobile <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
-                                Asset-Backed
+                        <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-10 tracking-tighter leading-[0.9] text-white">
+                            Institutional-Grade <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 drop-shadow-[0_0_30px_rgba(251,191,36,0.3)]">
+                                ABS Analytics
                             </span> <br />
-                            <span className="text-slate-500">Securities.</span>
+                            <span className="text-slate-600 text-5xl md:text-6xl lg:text-7xl">inside TEE.</span>
                         </h1>
 
-                        <p className="max-w-2xl mx-auto text-xl text-slate-400 mb-12 font-medium leading-relaxed">
-                            AutoVault transforms vehicle data into high-yield trustless securities.
-                            Confidential analysis, on-chain verification, and premium liquidity.
+                        <p className="max-w-3xl mx-auto text-lg md:text-xl text-slate-400 mb-14 font-medium leading-relaxed">
+                            Transform vehicle loan portfolios into verifiable asset-backed securities.
+                            <br className="hidden md:block" />
+                            <span className="text-slate-500">Confidential TEE computation • Zero-knowledge guarantees • On-chain verification</span>
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-28">
                             <button
                                 onClick={isConnected ? onEnterDashboard : handleConnect}
-                                className="btn-primary min-w-[240px] py-4 text-[10px] tracking-[0.2em] font-black uppercase shadow-[0_0_30px_-5px_theme(colors.amber.500/0.3)] hover:shadow-[0_0_50px_-10px_theme(colors.amber.500/0.5)] transition-all"
+                                className="btn-primary min-w-[260px] py-5 text-[10px] tracking-[0.25em] font-black uppercase shadow-[0_0_40px_-5px_theme(colors.amber.500/0.4)] hover:shadow-[0_0_60px_-10px_theme(colors.amber.500/0.6)] hover:scale-105 transition-all duration-300"
                             >
-                                {isConnected ? 'Enter Dashboard' : 'Connect Wallet'}
+                                {isConnected ? '→ Enter Workspace' : '→ Start Analysis'}
                             </button>
-                            <button className="text-[10px] font-black tracking-[0.2em] uppercase text-slate-500 hover:text-white transition-colors flex items-center gap-2 group">
-                                Explore Yield Pools
+                            <a
+                                href="#features"
+                                className="text-[10px] font-black tracking-[0.25em] uppercase text-slate-500 hover:text-amber-400 transition-colors flex items-center gap-2 group px-6 py-5"
+                            >
+                                Learn How It Works
                                 <span className="group-hover:translate-x-1 transition-transform">→</span>
-                            </button>
+                            </a>
                         </div>
                     </motion.div>
                 </div>
@@ -55,18 +59,18 @@ const Hero = ({ onEnterDashboard, handleConnect, isConnected }) => {
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/5 border border-white/5 rounded-2xl overflow-hidden max-w-4xl mx-auto"
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                    className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/5 border border-white/5 rounded-2xl overflow-hidden max-w-5xl mx-auto"
                 >
                     {[
-                        { label: 'Security', value: 'TEE / SCONE' },
-                        { label: 'Privacy', value: 'Zero Exposition' },
-                        { label: 'Verifiable', value: '100% On-Chain' },
-                        { label: 'Asset Class', value: 'Auto-Loans' },
+                        { label: 'Execution', value: 'Intel SGX', highlight: true },
+                        { label: 'Data Safety', value: 'Zero Exposure', highlight: false },
+                        { label: 'Verification', value: 'On-Chain', highlight: false },
+                        { label: 'Asset Class', value: 'Auto Loans', highlight: true },
                     ].map((stat, i) => (
-                        <div key={i} className="bg-[#05060b] p-8 text-center hover:bg-white/[0.02] transition-colors group">
-                            <div className="text-xs text-slate-500 font-bold tracking-[0.2em] uppercase mb-2 group-hover:text-amber-400 transition-colors">{stat.label}</div>
-                            <div className="text-xl font-bold text-white tracking-tight">{stat.value}</div>
+                        <div key={i} className={`bg-[#05060b] p-8 text-center hover:bg-white/[0.02] transition-all group ${stat.highlight ? 'border-l border-amber-500/10' : ''}`}>
+                            <div className={`text-[10px] font-black tracking-[0.25em] uppercase mb-3 transition-colors ${stat.highlight ? 'text-amber-500/80 group-hover:text-amber-400' : 'text-slate-600 group-hover:text-slate-500'}`}>{stat.label}</div>
+                            <div className="text-xl font-black text-white tracking-tight">{stat.value}</div>
                         </div>
                     ))}
                 </motion.div>

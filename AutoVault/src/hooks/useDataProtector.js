@@ -5,7 +5,7 @@ import JSZip from "jszip";
 import { IExec, utils } from "iexec";
 
 // iExec app address for the finalized AutoVault ABS iApp
-const RESOURCE_APP_ADDRESS = "0x9A788652c0F89d67Db84C9Ca5D9AE0d07d658680";
+const RESOURCE_APP_ADDRESS = "0x5748CCBf68D8Fde7cE4e83b0d328A9D9e0Ee5514";
 const WORKERPOOL_ADDRESS = "0xb967057a21dc6a66a29721d96b8aa7454b7c383f";
 
 export function useDataProtector() {

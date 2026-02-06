@@ -1,0 +1,17 @@
+{
+    "loans": [
+        {
+            "loan_id": "L_SOLO_001",
+            "origination_date": "2024-04-01",
+            "remaining_term_months": 48,
+            "principal_outstanding": 55000.00,
+            "interest_rate_annual": 4.9,
+            "fico_bucket": 820,
+            "ltv": 60.0,
+            "dti": 15.0,
+            "vehicle_type": "EV",
+            "vehicle_age_years": 0,
+            "payment_status": "current"
+        }
+    ]
+}

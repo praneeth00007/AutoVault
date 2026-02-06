@@ -135,12 +135,38 @@ const Dashboard = () => {
             }
 
 
+
             setRawResult(result);
             setFinalResult(analysisData);
+
+            // Generate random run ID and store in localStorage
+            const runId = `run_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+            const analysisRecord = {
+                runId,
+                taskId,
+                timestamp: new Date().toISOString(),
+                finalResult: analysisData,
+                rawResult: result,
+                validationResult,
+                confidence: result?.confidence || 'MEDIUM'
+            };
+
+            // Store in localStorage
+            try {
+                const existingHistory = JSON.parse(localStorage.getItem('abs_analytics_history') || '[]');
+                existingHistory.unshift(analysisRecord); // Add to beginning
+                // Keep only last 20 runs
+                if (existingHistory.length > 20) existingHistory.pop();
+                localStorage.setItem('abs_analytics_history', JSON.stringify(existingHistory));
+            } catch (e) {
+                console.warn('Failed to save to localStorage:', e);
+            }
 
             // Navigate to dedicated results page
             navigate('/results', {
                 state: {
+                    runId,
                     finalResult: analysisData,
                     rawResult: result,
                     taskId,
