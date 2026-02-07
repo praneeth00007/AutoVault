@@ -145,13 +145,14 @@ The application:
 * Wallet funded on Arbitrum Sepolia
 
 ---
-
+Note : Before Doing this make sure to create file iapp.config.json and fill with details
 ### 1. iApp (ABS Underwriting Engine)
 
 ```bash
 cd IAPP
 npm install -g @iexec/iapp-generator
 npm install -g iexec
+
 iapp wallet import
 ```
 
