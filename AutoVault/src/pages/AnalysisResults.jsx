@@ -237,7 +237,23 @@ const AnalysisResults = () => {
                                 <YAxis stroke="#475569" fontSize={12} axisLine={false} tickLine={false} label={{ value: 'Expected Loss %', angle: -90, position: 'insideLeft', style: { fill: '#475569', fontSize: 10, fontWeight: 'bold' } }} />
                                 <Tooltip
                                     cursor={{ fill: 'rgba(251, 191, 36, 0.03)' }}
-                                    contentStyle={{ backgroundColor: '#05060b', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', fontSize: '12px', padding: '12px' }}
+                                    content={({ active, payload, label }) => {
+                                        if (active && payload && payload.length) {
+                                            return (
+                                                <div className="bg-[#05060b]/90 backdrop-blur-xl border border-white/10 p-4 rounded-xl shadow-2xl">
+                                                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1">{label}</p>
+                                                    <div className="flex items-baseline gap-1">
+                                                        <span className="text-3xl font-black" style={{ color: payload[0].payload.scenario === 'Base Case' ? '#10b981' : '#ef4444' }}>
+                                                            {payload[0].value}
+                                                        </span>
+                                                        <span className="text-sm font-bold text-slate-500">%</span>
+                                                    </div>
+                                                    <p className="text-[9px] text-slate-600 uppercase tracking-wider font-bold mt-1">Expected Loss Rate</p>
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    }}
                                 />
                                 <Bar dataKey="loss" radius={[8, 8, 0, 0]} barSize={100}>
                                     <Cell fill="#10b981" fillOpacity={0.8} />

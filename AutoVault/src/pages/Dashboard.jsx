@@ -193,11 +193,7 @@ const Dashboard = () => {
                 className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16"
             >
                 <div className="flex items-center gap-6">
-                    <img
-                        src="/Logo.png"
-                        alt="AutoVault Logo"
-                        className="h-24 w-auto object-contain drop-shadow-[0_0_20px_rgba(251,191,36,0.15)]"
-                    />
+                    
                     <div>
                         <h1 className="text-4xl font-black mb-1 tracking-tight">
                             Secure <span className="text-amber-500">Workspace</span>
