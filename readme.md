@@ -1,6 +1,3 @@
-
----
-
 # AutoVault: Confidential ABS Underwriting on iExec
 
 ## 🚀 Overview
